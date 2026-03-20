@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Deep Work Optimizer</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f5f7fa;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.card{
+background:white;
+padding:40px;
+border-radius:12px;
+width:420px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+h1{text-align:center;}
+
+input,select{
+width:100%;
+padding:10px;
+margin:10px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#4b6ef5;
+color:white;
+border:none;
+border-radius:6px;
+font-size:16px;
+cursor:pointer;
+}
+
+.result{
+background:#eef2f7;
+padding:15px;
+margin-top:20px;
+border-radius:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>Deep Work Optimizer</h1>
+
+<label>Sleep Hours</label>
+<input id="sleep">
+
+<label>Study Hours</label>
+<input id="study">
+
+<label>Time of Day</label>
+<select id="time">
+<option>Morning</option>
+<option>Afternoon</option>
+<option>Night</option>
+</select>
+
+<button onclick="optimize()">Optimize Session</button>
+
+
+<div class="result">
+
+<h3>Focus Score: <span id="score"></span></h3>
+<p>Recommended Session Length: <span id="session"></span> minutes</p>
+
+</div>
+
+
+<div class="result">
+
+<h3>Current Weather</h3>
+<p>Temperature: <span id="temp"></span>°C</p>
+<p>Condition: <span id="condition"></span></p>
+
+</div>
+
+
+<div class="result">
+
+<h3>Routine Stability</h3>
+<p>Score: <span id="routineScore"></span></p>
+<p>Status: <span id="routineLabel"></span></p>
+
+</div>
+
+</div>
+
+
+<script>
+
+async function optimize(){
+
+const sleep=document.getElementById("sleep").value;
+const study=document.getElementById("study").value;
+const time=document.getElementById("time").value;
+
+const response=await fetch("/optimize-session",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+sleep_hours:parseFloat(sleep),
+study_hours:parseFloat(study),
+time_of_day:time
+})
+});
+
+const data=await response.json();
+
+document.getElementById("score").innerText=data.focus_score;
+document.getElementById("session").innerText=data.recommended_session_length;
+
+document.getElementById("temp").innerText=data.weather.temperature;
+document.getElementById("condition").innerText=data.weather.condition;
+
+document.getElementById("routineScore").innerText=data.routine_stability.score;
+document.getElementById("routineLabel").innerText=data.routine_stability.label;
+
+}
+
+</script>
+
+</body>
+</html>
